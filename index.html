@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Supplier Management System</title>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f0f0f0;
+}
+
+.container {
+    max-width: 800px; /* Set max width for container */
+    margin: 20px auto; /* Center align the container */
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+h1 {
+    text-align: center;
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+}
+
+label {
+    margin-bottom: 8px;
+}
+
+input[type="text"],
+input[type="number"],
+input[type="date"] {
+    padding: 8px;
+    margin-bottom: 16px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    width: 100%; /* Set input fields to full width */
+}
+
+input[type="submit"],
+input[type="button"] {
+    padding: 10px;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+input[type="submit"]:hover,
+input[type="button"]:hover {
+    background-color: #0056b3;
+}
+
+.supplier-account {
+    margin-top: 20px;
+    padding: 10px;
+    background-color: #f9f9f9;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.quantity-buttons {
+    display: flex;
+    justify-content: space-between;
+}
+
+/* Container for the card */
+.card-container {
+    width: 90%;
+    max-width: 260px;
+    margin: 20px auto;
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Card title */
+.card-title {
+    font-size: 18px;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+/* Card content */
+.card-content {
+    font-size: 14px;
+    line-height: 1.5;
+    margin-bottom: 10px;
+}
+
+/* Card footer */
+.card-footer {
+    font-size: 12px;
+    color: #888;
+}
+
+/* For smaller screens */
+@media screen and (max-width: 320px) {
+    .card-container {
+        padding: 10px;
+    }
+}
+
+  .container {
+    max-width: 100%;
+    margin: 20px;
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  }
+  h1 {
+    text-align: center;
+  }
+  form {
+    display: flex;
+    flex-direction: column;
+  }
+  label {
+    margin-bottom: 8px;
+  }
+  input[type="text"], input[type="number"], input[type="date"] {
+    padding: 8px;
+    margin-bottom: 16px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+  }
+  input[type="submit"], input[type="button"] {
+    padding: 10px;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  input[type="submit"]:hover, input[type="button"]:hover {
+    background-color: #0056b3;
+  }
+  .supplier-account {
+    margin-top: 20px;
+    padding: 10px;
+    background-color: #f9f9f9;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+  }
+  .quantity-buttons {
+    display: flex;
+    justify-content: space-between;
+  }
+  /* Button styles */
+.card-button {
+    padding: 8px 16px;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.card-button:hover {
+    background-color: #0056b3;
+}
+input:focus {
+    outline: none; /* Remove default focus outline */
+    border-color: #007bff; /* Set border color to blue */
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5); /* Optional: Add a box shadow for visual effect */
+}
+</style>
+</head>
+<body>
+<div class="container">
+  <h1>Supplier Management System</h1>
+  <form id="supplierForm">
+    <label for="supplierName">Supplier Name:</label>
+    <input type="text" id="supplierName" required>
+    <label for="supplierPrice">Price:</label>
+    <input type="number" id="supplierPrice" value="400" required>
+    <label for="product">Product:</label>
+    <input type="text" id="product" required>
+    <label for="quantity">Quantity:</label>
+    <div class="quantity-buttons">
+      <input type="button" value="-" id="decrementQuantity">
+      <input type="number" id="quantity" value="1" required>
+      <input type="button" value="+" id="incrementQuantity">
+    </div>
+    <label for="date">Date:</label>
+    <input type="date" id="date" value="2024-04-11" required> <!-- Change the default date here -->
+    <input type="submit" value="Add Supplier">
+  </form>
+  <div id="supplierList"></div>
+  <input type="button" id="clearStorage" value="Clear All Suppliers">
+  <br>
+  <span>Total Price: <span id="totalPrice">400</span> Rs</span>
+</div>
+
+<script>
+  document.getElementById('supplierForm').addEventListener('submit', function(event) {
+    event.preventDefault();
+    var supplierName = document.getElementById('supplierName').value;
+    var supplierPrice = document.getElementById('supplierPrice').value;
+    var product = document.getElementById('product').value;
+    var quantity = document.getElementById('quantity').value;
+    var date = document.getElementById('date').value;
+
+    var supplierInfo = {
+      name: supplierName,
+      price: supplierPrice,
+      product: product,
+      quantity: quantity,
+      date: date
+    };
+
+    var suppliers = JSON.parse(localStorage.getItem('suppliers')) || [];
+    suppliers.push(supplierInfo);
+    localStorage.setItem('suppliers', JSON.stringify(suppliers));
+
+    displaySuppliers();
+
+    document.getElementById('supplierForm').reset();
+  });
+
+  function displaySuppliers() {
+    var supplierList = document.getElementById('supplierList');
+    supplierList.innerHTML = '';
+    var suppliers = JSON.parse(localStorage.getItem('suppliers')) || [];
+    suppliers.forEach(function(supplier, index) {
+      var supplierAccount = document.createElement('div');
+      supplierAccount.classList.add('supplier-account');
+      supplierAccount.innerHTML = '<strong>Name:</strong> ' + supplier.name + '<br><strong>Price:</strong> ' + supplier.price + '<br><strong>Product:</strong> ' + supplier.product + '<br><strong>Quantity:</strong> ' + supplier.quantity + '<br><strong>Date:</strong> ' + supplier.date;
+      
+      // Add remove button
+      var removeButton = document.createElement('input');
+      removeButton.type = 'button';
+      removeButton.value = 'Remove Supplier';
+      removeButton.addEventListener('click', function() {
+        suppliers.splice(index, 1);
+        localStorage.setItem('suppliers', JSON.stringify(suppliers));
+        displaySuppliers();
+      });
+      supplierAccount.appendChild(removeButton);
+      
+      supplierList.appendChild(supplierAccount);
+    });
+  }
+
+  displaySuppliers();
+
+  document.getElementById('clearStorage').addEventListener('click', function() {
+    localStorage.removeItem('suppliers');
+    displaySuppliers();
+  });
+
+  // Quantity increment and decrement buttons
+  document.getElementById('incrementQuantity').addEventListener('click', function() {
+    var quantityInput = document.getElementById('quantity');
+    quantityInput.value = parseInt(quantityInput.value) + 1;
+    calculateTotalPrice();
+  });
+
+  document.getElementById('decrementQuantity').addEventListener('click', function() {
+    var quantityInput = document.getElementById('quantity');
+    if (parseInt(quantityInput.value) > 1) {
+      quantityInput.value = parseInt(quantityInput.value) - 1;
+      calculateTotalPrice();
+    }
+  });
+
+  function calculateTotalPrice() {
+    var quantity = parseInt(document.getElementById('quantity').value);
+    var price = parseInt(document.getElementById('supplierPrice').value);
+    var totalPrice = quantity * price;
+    document.getElementById('totalPrice').innerText = totalPrice;
+  }
+</script>
+</body>
+</html>
